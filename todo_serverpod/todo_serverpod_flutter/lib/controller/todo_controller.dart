@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_serverpod_client/todo_serverpod_client.dart';
 import 'package:todo_serverpod_flutter/Utils/todo_services.dart';
+import 'package:todo_serverpod_flutter/main.dart';
 
 import '../Utils/api_client.dart';
 import '../Utils/singletons.dart';
@@ -57,22 +58,26 @@ final todoNotifier =
     AsyncNotifierProvider<TodoNotifier, List<Todo>>(TodoNotifier.new);
 
 class TodoNotifier extends AsyncNotifier<List<Todo>> {
-  final repo = singleton<TodoServices>();
-
   @override
   FutureOr<List<Todo>> build() async {
-    return await repo.fetAllTodo();
+    final sa = ref.read(clientProvider).todo;
+
+    return await sa.getTodos();
   }
 
   void fetchTodo() async {
+    final sa = ref.read(clientProvider).todo;
+
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() {
-      return repo.fetAllTodo();
+      return sa.getTodos();
     });
   }
 
   void addTodo(Todo todo) async {
-    final data = await repo.addTodo(todo);
+    final sa = ref.read(clientProvider).todo;
+
+    final data = await sa.addTodo(todo);
     if (data) {
       fetchTodo();
     }
@@ -80,7 +85,9 @@ class TodoNotifier extends AsyncNotifier<List<Todo>> {
 
   ///remove todo from local Storage
   void removeTodo(int id) async {
-    final data = await repo.deleteTodo(id);
+    final sa = ref.read(clientProvider).todo;
+
+    final data = await sa.deleteTodo(id);
     if (data) {
       fetchTodo();
     }
@@ -89,7 +96,9 @@ class TodoNotifier extends AsyncNotifier<List<Todo>> {
   ///Update  current todo from local Storage
 
   void updateTodo(int id) async {
-    final data = await repo.deleteTodo(id);
+    final sa = ref.read(clientProvider).todo;
+
+    final data = await sa.deleteTodo(id);
     if (data) {
       fetchTodo();
     }

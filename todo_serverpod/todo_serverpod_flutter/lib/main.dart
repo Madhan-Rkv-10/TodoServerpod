@@ -15,7 +15,9 @@ import 'package:todo_serverpod_flutter/controller/todo_controller.dart';
 // production servers.
 final client = Client('http://localhost:8080/')
   ..connectivityMonitor = FlutterConnectivityMonitor();
-
+final clientProvider = Provider<Client>((ref) =>
+    Client('http://localhost:8080/')
+      ..connectivityMonitor = FlutterConnectivityMonitor());
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -43,11 +45,13 @@ class MyApp extends HookConsumerWidget {
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
-  @override
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final stateCOntroller = ref.read(todoProvider);
+    final stateController = ref.watch(todoNotifier);
 
+    final r = ref.watch(clientProvider);
+    log(r.todo.toString());
     return Scaffold(
       appBar: AppBar(
         title: Text("widget.title"),
@@ -97,6 +101,15 @@ class HomePage extends HookConsumerWidget {
                 child: const Text("Delete First Data"),
               ),
             ),
+            stateController.when(
+              data: (s) {
+                return Text('data $s');
+              },
+              error: (error, t) {
+                return Text('$error$t');
+              },
+              loading: () => CircularProgressIndicator(),
+            )
           ],
         ),
       ),
