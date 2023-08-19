@@ -1,0 +1,5 @@
+class: Todo
+table: todo
+fields:
+  title: String
+  content: String
