@@ -60,9 +60,9 @@ final todoNotifier =
 class TodoNotifier extends AsyncNotifier<List<Todo>> {
   @override
   FutureOr<List<Todo>> build() async {
-    final sa = ref.read(clientProvider).todo;
+    final todo = ref.read(clientProvider).todo;
 
-    return await sa.getTodos();
+    return await todo.getTodos();
   }
 
   void fetchTodo() async {
@@ -75,9 +75,9 @@ class TodoNotifier extends AsyncNotifier<List<Todo>> {
   }
 
   void addTodo(Todo todo) async {
-    final sa = ref.read(clientProvider).todo;
+    final data = ref.read(clientProvider).todo;
 
-    final data = await sa.addTodo(todo);
+    final data = await data.addTodo(todo);
     if (data) {
       fetchTodo();
     }
@@ -85,9 +85,9 @@ class TodoNotifier extends AsyncNotifier<List<Todo>> {
 
   ///remove todo from local Storage
   void removeTodo(int id) async {
-    final sa = ref.read(clientProvider).todo;
+    final todo = ref.read(clientProvider).todo;
 
-    final data = await sa.deleteTodo(id);
+    final data = await todo.deleteTodo(id);
     if (data) {
       fetchTodo();
     }
@@ -96,9 +96,9 @@ class TodoNotifier extends AsyncNotifier<List<Todo>> {
   ///Update  current todo from local Storage
 
   void updateTodo(int id) async {
-    final sa = ref.read(clientProvider).todo;
+    final todo = ref.read(clientProvider).todo;
 
-    final data = await sa.deleteTodo(id);
+    final data = await todo.deleteTodo(id);
     if (data) {
       fetchTodo();
     }
